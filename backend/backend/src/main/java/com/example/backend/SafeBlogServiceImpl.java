@@ -4,24 +4,26 @@ import java.util.List;
 
 public class SafeBlogServiceImpl implements BlogService {
 
-    public List<String> findAll() {
+    public List<BlogPost> findAll() {
 	// TODO Auto-generated method stub
 	return null;
     }
 
-    public String getPost(String id) {
+    public BlogPost getPost(int id) {
 	// TODO Auto-generated method stub
 	return null;
     }
 
-    public void createNewPost(String title, String body) {
+    @Override
+    public void createNewPost(String body) {
 	// TODO Auto-generated method stub
 	
     }
 
-    public void updatePost(String id, String title, String body) {
+    @Override
+    public BlogPost updatePost(String id, String body) {
 	// TODO Auto-generated method stub
-	
+	return null;
     }
 
 }

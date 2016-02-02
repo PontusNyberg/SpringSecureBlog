@@ -7,7 +7,10 @@
  * Main AngularJS Web Application
  */
 var app = angular.module('tutorialWebApp', [
-  'ngRoute'
+    'ngCookies',
+    'ngResource',
+    'ngSanitize',
+    'ngRoute'
 ]);
 
 /**
@@ -16,14 +19,14 @@ var app = angular.module('tutorialWebApp', [
 app.config(['$routeProvider', function ($routeProvider) {
   $routeProvider
     // Home
-    .when("/", {templateUrl: "partials/blog.html", controller: "PageCtrl"})
+    .when("/", {templateUrl: "partials/blog.html", controller: "BlogCtrl"})
     // Pages
     .when("/about", {templateUrl: "partials/about.html", controller: "PageCtrl"})
     .when("/contact", {templateUrl: "partials/contact.html", controller: "PageCtrl"})
     // Blog
     .when("/blog", {templateUrl: "partials/blog.html", controller: "BlogCtrl"})
     .when("/blog/add", {templateUrl: "partials/blog_add.html", controller: "BlogCtrl"})
-    .when("/blog/post", {templateUrl: "partials/blog_item.html", controller: "BlogCtrl"})
+    .when("/blog/post/:id", {templateUrl: "partials/blog_item.html", controller: "BlogCtrl"})
     // else 404
     .otherwise("/404", {templateUrl: "partials/404.html", controller: "PageCtrl"});
 }]);
@@ -31,17 +34,23 @@ app.config(['$routeProvider', function ($routeProvider) {
 /**
  * Controls the Blog
  */
-app.controller('BlogCtrl', function (/* $scope, $location, $http */) {
+app.controller('BlogCtrl', function ($scope, $location, $http) {
   console.log("Accessing "); console.log(location.hash);
+  $http.defaults.useXDomain = true;
 
-  $http.get('/api/v1/posts').success(function (data) {
+  $http.get('http://127.0.0.1\:4567/api/v1/posts').success(function (data) {
       $scope.posts = data;
     }).error(function (data, status) {
       console.log('Error ' + data)
     })
 
+    $scope.openPost = function (id) {
+      $location.path('/blog/post/:id');
+    }
+
     $scope.createPost = function () {
-      $http.post('/api/v1/posts', $scope.post).success(function (data) {
+      $http.post('http://127.0.0.1\:4567/api/v1/posts', $scope.post)
+        .success(function (data) {
           $location.path('/');
       }).error(function (data, status) {
           console.log('Error ' + data)

@@ -4,23 +4,25 @@ import java.util.Date;
 
 public class BlogPost {
     
-    private String id;
+    private int id;
     private String title;
     private String body;
-    private Date createdDate = new Date();
+    private Date createdDate;
     private Date updateDate;
     
-    public BlogPost (String id, String title, String body){
+    public BlogPost (int id, String title, String body, Date createdDate, Date updateDate){
 	this.id = id;
 	this.title = title;
 	this.body = body;
+	this.createdDate = createdDate;
+	this.updateDate = updateDate;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -43,13 +45,17 @@ public class BlogPost {
     public Date getCreatedDate(){
 	return this.createdDate;
     }
+    
+    public void setCreatedDate(Date createDate){
+	this.createdDate = createDate;
+    }
 
     public Date getUpdateDate() {
         return updateDate;
     }
 
-    public void setUpdateDate() {
-        this.updateDate = new Date();
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
     
     
