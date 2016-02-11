@@ -33,6 +33,9 @@ public class ApiEndpoints
 	
 	put(API_CONTEXT + "/posts/:id", "application/json", (request, response) 
 		-> blogService.updatePost(request.params(":id"), request.body()), new JsonTransformer());
+	
+	get(API_CONTEXT + "/posts/:id", "application/json", (request, response)
+		-> blogService.getPost(Integer.parseInt(request.params(":id"))), new JsonTransformer());
     }
     
     private static void enableCORS(final String origin, final String methods, final String headers){

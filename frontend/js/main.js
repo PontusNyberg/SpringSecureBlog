@@ -26,7 +26,7 @@ app.config(['$routeProvider', function ($routeProvider) {
     // Blog
     .when("/blog", {templateUrl: "partials/blog.html", controller: "BlogCtrl"})
     .when("/blog/add", {templateUrl: "partials/blog_add.html", controller: "BlogCtrl"})
-    .when("/blog/post/:id", {templateUrl: "partials/blog_item.html", controller: "BlogCtrl"})
+    .when("/blog/post/:id", {templateUrl: "partials/blog_item.html", controller: "BlogViewCtrl"})
     // else 404
     .otherwise("/404", {templateUrl: "partials/404.html", controller: "PageCtrl"});
 }]);
@@ -44,10 +44,6 @@ app.controller('BlogCtrl', function ($scope, $location, $http) {
       console.log('Error ' + data)
     })
 
-    $scope.openPost = function (id) {
-      $location.path('/blog/post/:id');
-    }
-
     $scope.createPost = function () {
       $http.post('http://127.0.0.1\:4567/api/v1/posts', $scope.post)
         .success(function (data) {
@@ -56,6 +52,15 @@ app.controller('BlogCtrl', function ($scope, $location, $http) {
           console.log('Error ' + data)
       })
     }
+});
+
+app.controller('BlogViewCtrl', function ($scope, $routeParams, $http) {
+  $http.get('http://127.0.0.1\:4567/api/v1/posts/' + $routeParams.id)
+      .success(function(data) {
+        $scope.post = data;
+      }).error(function(data, status) {
+        console.log('Error' + data + ' status: ' + status)
+      })
 });
 
 /**
