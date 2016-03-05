@@ -5,7 +5,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +18,7 @@ public class UnsafeBlogServiceImpl implements BlogService{
     private Connection connection;
     private Statement statement;
     private ResultSet resultSet = null;
+    private SimpleDateFormat sdf;
     
     public UnsafeBlogServiceImpl(){
 	try {
@@ -31,6 +34,7 @@ public class UnsafeBlogServiceImpl implements BlogService{
 	    e.printStackTrace();
 	}
 	
+	sdf = new SimpleDateFormat("yyyy-MM-dd");
     }
 
     public List<BlogPost> findAll() {
@@ -44,8 +48,8 @@ public class UnsafeBlogServiceImpl implements BlogService{
 			resultSet.getInt("id"),
 			resultSet.getString("title"),
 			resultSet.getString("body"),
-			resultSet.getDate("created"),
-			resultSet.getDate("updated"));
+			resultSet.getTimestamp("created"),
+			resultSet.getTimestamp("updated"));
 		posts.add(post);
 	    }
 	} catch (SQLException e) {
@@ -73,8 +77,8 @@ public class UnsafeBlogServiceImpl implements BlogService{
 			resultSet.getInt("id"),
 			resultSet.getString("title"),
 			resultSet.getString("body"),
-			resultSet.getDate("created"),
-			resultSet.getDate("updated")
+			resultSet.getTimestamp("created"),
+			resultSet.getTimestamp("updated")
 			);
 	    }
 	} catch(SQLException e) {
@@ -94,12 +98,13 @@ public class UnsafeBlogServiceImpl implements BlogService{
 	BlogPost post = new Gson().fromJson(body, BlogPost.class);
 	try{
 	    statement = connection.createStatement();
-	    statement.executeQuery("INSERT INTO posts(id) VALUES("
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	    statement.executeUpdate("INSERT INTO posts VALUES("
 	    	+ "null, " 
-		+ post.getTitle() + ", " 
-		+ post.getBody() + ", " 
-	    	+ new Date() 
-	    	+ ", null)");
+		+ "'" + post.getTitle() + "', " 
+		+ "'" + post.getBody() + "', " 
+	    	+ "'" + sdf.format(new Date().getTime()) + "', " 
+	    	+ "null);");
 	    statement.close();
 	} catch (SQLException e){
 	    e.printStackTrace();
@@ -112,10 +117,11 @@ public class UnsafeBlogServiceImpl implements BlogService{
 	try{
 	    statement = connection.createStatement();
 	    statement.executeUpdate("UPDATE posts SET "
-	    	+ "title = " + post.getTitle() 
-	    	+ ", "
-	    	+ "body = " + post.getBody() 
-	    	+ " WHERE id = " + id + ");");
+	    	+ "title = '" + post.getTitle() + "', "
+	    	+ "body = '" + post.getBody() + "', "
+	    	+ "created = '"  + sdf.format(post.getCreatedDate())+ "', "
+	    	+ "updated = '" + sdf.format(new Date().getTime()) + "'"
+	    	+ " WHERE id = " + id + ";");
 	    statement.close();
 	} catch (SQLException e){
 	    e.printStackTrace();

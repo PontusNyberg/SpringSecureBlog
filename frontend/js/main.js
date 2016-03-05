@@ -25,8 +25,9 @@ app.config(['$routeProvider', function ($routeProvider) {
     .when("/contact", {templateUrl: "partials/contact.html", controller: "PageCtrl"})
     // Blog
     .when("/blog", {templateUrl: "partials/blog.html", controller: "BlogCtrl"})
-    .when("/blog/add", {templateUrl: "partials/blog_add.html", controller: "BlogCtrl"})
+    .when("/blog/add", {templateUrl: "partials/blog_add.html", controller: "BlogPostAddCtrl"})
     .when("/blog/post/:id", {templateUrl: "partials/blog_item.html", controller: "BlogViewCtrl"})
+    .when("/blog/post/edit/:id", {templateUrl: "partials/blog_edit.html", controller: "BlogEditCtrl"})
     // else 404
     .otherwise("/404", {templateUrl: "partials/404.html", controller: "PageCtrl"});
 }]);
@@ -34,7 +35,7 @@ app.config(['$routeProvider', function ($routeProvider) {
 /**
  * Controls the Blog
  */
-app.controller('BlogCtrl', function ($scope, $location, $http) {
+app.controller('BlogCtrl', function ($scope, $location, $http, $filter) {
   console.log("Accessing "); console.log(location.hash);
   $http.defaults.useXDomain = true;
 
@@ -43,24 +44,55 @@ app.controller('BlogCtrl', function ($scope, $location, $http) {
     }).error(function (data, status) {
       console.log('Error ' + data)
     })
-
-    $scope.createPost = function () {
-      $http.post('http://127.0.0.1\:4567/api/v1/posts', $scope.post)
-        .success(function (data) {
-          $location.path('/');
-      }).error(function (data, status) {
-          console.log('Error ' + data)
-      })
-    }
 });
 
-app.controller('BlogViewCtrl', function ($scope, $routeParams, $http) {
+app.controller('BlogPostAddCtrl', function ($scope, $location, $http) {
+  console.log("Accessing "); console.log(location.hash);
+  $http.defaults.useXDomain = true;
+
+  $scope.createPost = function () {
+    $http.defaults.headers.post = {};
+    $http.post('http://127.0.0.1\:4567/api/v1/posts', $scope.post)
+      .success(function (data) {
+        $location.path('/');
+    }).error(function (data, status) {
+        console.log('Error ' + data)
+    })
+  }
+});
+
+app.controller('BlogViewCtrl', function ($scope, $routeParams, $location, $http) {
   $http.get('http://127.0.0.1\:4567/api/v1/posts/' + $routeParams.id)
       .success(function(data) {
         $scope.post = data;
       }).error(function(data, status) {
         console.log('Error' + data + ' status: ' + status)
       })
+
+  $scope.go = function ( path ) {
+    $location.path( path + $routeParams.id );
+  }
+});
+
+app.controller('BlogEditCtrl', function ($scope, $routeParams, $http, $location) {
+  $http.defaults.useXDomain = true;
+
+  $http.get('http://127.0.0.1\:4567/api/v1/posts/' + $routeParams.id)
+    .success(function(data) {
+      $scope.post = data;
+    }).error(function(data, status) {
+      console.log('Error' + data + ' status: ' + status)
+    })
+
+  $scope.editPost = function () {
+    $http.defaults.headers.post = {};
+    $http.post('http://127.0.0.1\:4567/api/v1/posts/' + $routeParams.id, $scope.post)
+      .success(function (data) {
+        $location.path('/blog/post/' + $routeParams.id );
+    }).error(function (data, status) {
+        console.log('Error ' + data)
+    })
+  }
 });
 
 /**

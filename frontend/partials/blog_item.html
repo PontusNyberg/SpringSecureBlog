@@ -7,6 +7,10 @@
                 <li><a href="../index.html">Home</a>
                 </li>
                 <li class="active">{{post.title}}</li>
+                <span style="padding-left:82%">
+                    <button type="button" class="btn btn-primary"
+                    ng-click="go('/blog/post/edit/')">Edit</button>
+                </span>
             </ol>
         </div>
        
@@ -21,9 +25,8 @@
             <p><i class="fa fa-clock-o"></i> Posted on {{post.createdDate}}
             </p>
             <hr>
-            <img src="http://placehold.it/900x150" class="img-responsive">
-            <hr>
-            <p>{{post.body}}</p>
+
+            <p style="white-space: pre-wrap">{{post.body}}</p>
 
             <hr>
 
@@ -70,44 +73,6 @@
                 </div>
                 <!-- /input-group -->
             </div>
-            <!-- /well -->
-            <div class="well">
-                <h4>Popular Blog Categories</h4>
-
-                <div class="row">
-                    <div class="col-lg-6">
-                        <ul class="list-unstyled">
-                            <li><a href="#dinosaurs">Dinosaurs</a>
-                            </li>
-                            <li><a href="#spaceships">Spaceships</a>
-                            </li>
-                            <li><a href="#fried-foods">Fried Foods</a>
-                            </li>
-                            <li><a href="#wild-animals">Wild Animals</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-6">
-                        <ul class="list-unstyled">
-                            <li><a href="#alien-abductions">Alien Abductions</a>
-                            </li>
-                            <li><a href="#business-casual">Business Casual</a>
-                            </li>
-                            <li><a href="#robots">Robots</a>
-                            </li>
-                            <li><a href="#fireworks">Fireworks</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!-- /well -->
-            <div class="well">
-                <h4>Side Widget Well</h4>
-
-                <p>Bootstrap's default well's work great for side widgets! What is a widget anyways...?</p>
-            </div>
-            <!-- /well -->
         </div>
     </div>
 

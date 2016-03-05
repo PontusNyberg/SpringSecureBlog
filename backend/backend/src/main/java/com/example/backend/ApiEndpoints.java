@@ -31,8 +31,11 @@ public class ApiEndpoints
 	    return response;
 	}, new JsonTransformer());
 	
-	put(API_CONTEXT + "/posts/:id", "application/json", (request, response) 
-		-> blogService.updatePost(request.params(":id"), request.body()), new JsonTransformer());
+	post(API_CONTEXT + "/posts/:id", "application/json", (request, response) -> {
+	    blogService.updatePost(request.params(":id"), request.body());
+	    response.status(201);
+	    return response;
+	}, new JsonTransformer());
 	
 	get(API_CONTEXT + "/posts/:id", "application/json", (request, response)
 		-> blogService.getPost(Integer.parseInt(request.params(":id"))), new JsonTransformer());
