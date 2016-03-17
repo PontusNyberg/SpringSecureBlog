@@ -1,10 +1,8 @@
 package com.example.backend;
 
-import static spark.Spark.post;
-import static spark.Spark.put;
-import static spark.Spark.get;
 import static spark.Spark.before;
-
+import static spark.Spark.get;
+import static spark.Spark.post;
 import spark.Filter;
 import spark.Request;
 import spark.Response;
@@ -39,6 +37,25 @@ public class ApiEndpoints
 	
 	get(API_CONTEXT + "/posts/:id", "application/json", (request, response)
 		-> blogService.getPost(Integer.parseInt(request.params(":id"))), new JsonTransformer());
+	
+	get(API_CONTEXT + "/comments/:postId", "application/json", (request, response) 
+		-> blogService.findAllComments(Integer.parseInt(request.params(":postId"))), new JsonTransformer());
+	
+	post(API_CONTEXT + "/comments", "application/json", (request, response) -> {
+	    //Call the correct method to send stuff
+	    blogService.createNewComment(request.body());
+	    response.status(201);
+	    return response;
+	}, new JsonTransformer());
+	
+	post(API_CONTEXT + "/comments/:id", "application/json", (request, response) -> {
+	    blogService.updateComment(request.params(":id"), request.body());
+	    response.status(201);
+	    return response;
+	}, new JsonTransformer());
+	
+	get(API_CONTEXT + "/comments/:id", "application/json", (request, response)
+		-> blogService.getComment(Integer.parseInt(request.params(":id"))), new JsonTransformer());
     }
     
     private static void enableCORS(final String origin, final String methods, final String headers){

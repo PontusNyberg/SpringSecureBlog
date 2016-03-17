@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -127,5 +126,102 @@ public class UnsafeBlogServiceImpl implements BlogService{
 	    e.printStackTrace();
 	}
 	return post;
+    }
+    
+    public List<Comment> findAllComments(int postId) {
+	List<Comment> comments = new ArrayList<Comment>();
+	try {
+	    statement = connection.createStatement();
+	    resultSet = statement.executeQuery("SELECT * FROM comments where post_id=" + postId);
+	    Comment comment = null;
+	    while(resultSet.next()){
+		comment = new Comment(
+			resultSet.getInt("id"),
+			resultSet.getString("name"),
+			resultSet.getString("body"),
+			resultSet.getTimestamp("created"),
+			resultSet.getTimestamp("updated"),
+			resultSet.getInt("post_id")
+			);
+		comments.add(comment);
+	    }
+	} catch (SQLException e) {
+	    e.printStackTrace();
+	} finally {
+	    try {
+		resultSet.close();
+		statement.close();
+	    } catch (SQLException e) {
+		e.printStackTrace();
+	    }
+	}
+	
+	return comments;
+    }
+
+    public Comment getComment(int id) {
+	Comment comment = null;
+	try {
+	    statement = connection.createStatement();
+	    resultSet = statement.executeQuery(""
+	    	+ "SELECT * FROM comment where id = " + id + ";");
+	    while(resultSet.next()){
+		comment = new Comment(
+			resultSet.getInt("id"),
+			resultSet.getString("name"),
+			resultSet.getString("body"),
+			resultSet.getTimestamp("created"),
+			resultSet.getTimestamp("updated"),
+			resultSet.getInt("post_id")
+			);
+	    }
+	} catch(SQLException e) {
+	    e.printStackTrace();
+	} finally {
+	    try {
+		resultSet.close();
+		statement.close();
+	    } catch (SQLException e) {
+		e.printStackTrace();
+	    }
+	}
+	return comment;
+    }
+    
+    public void createNewComment(String body) {
+	Comment comment = new Gson().fromJson(body, Comment.class);
+	try{
+	    statement = connection.createStatement();
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	    statement.executeUpdate("INSERT INTO comments VALUES("
+	    	+ "null, " 
+		+ "'" + comment.getName() + "', " 
+		+ "'" + comment.getBody() + "', " 
+	    	+ "'" + sdf.format(new Date().getTime()) + "', " 
+	    	+ "null,"
+	    	+ "'" + comment.getPostId() + "');");
+	    statement.close();
+	} catch (SQLException e){
+	    e.printStackTrace();
+	}
+	
+    }
+
+    public Comment updateComment(String id, String body) {
+	Comment comment = new Gson().fromJson(body, Comment.class);
+	try{
+	    statement = connection.createStatement();
+	    statement.executeUpdate("UPDATE comments SET "
+	    	+ "name = '" + comment.getName() + "', "
+	    	+ "body = '" + comment.getBody() + "', "
+	    	+ "created = '"  + sdf.format(comment.getCreatedDate())+ "', "
+	    	+ "updated = '" + sdf.format(new Date().getTime()) + "'"
+	    	+ " WHERE id = " + id + ";");
+	    statement.close();
+	} catch (SQLException e){
+	    e.printStackTrace();
+	}
+	
+	return comment;
     }
 }

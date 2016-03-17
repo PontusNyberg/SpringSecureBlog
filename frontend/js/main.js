@@ -39,7 +39,8 @@ app.controller('BlogCtrl', function ($scope, $location, $http, $filter) {
   console.log("Accessing "); console.log(location.hash);
   $http.defaults.useXDomain = true;
 
-  $http.get('http://127.0.0.1\:4567/api/v1/posts').success(function (data) {
+  $http.get('http://127.0.0.1\:4567/api/v1/posts')
+    .success(function (data) {
       $scope.posts = data;
     }).error(function (data, status) {
       console.log('Error ' + data)
@@ -68,6 +69,24 @@ app.controller('BlogViewCtrl', function ($scope, $routeParams, $location, $http)
       }).error(function(data, status) {
         console.log('Error' + data + ' status: ' + status)
       })
+
+    $http.get('http://127.0.0.1\:4567/api/v1/comments/' + $routeParams.id)
+      .success(function(data) {
+        $scope.comments = data;
+      }).error(function(data, status) {
+        console.log('Error' + data + ' status: ' + status)
+      })
+
+  $scope.addComment = function() {
+    $http.defaults.headers.post = {};
+    $scope.comment.postId = $routeParams.id;
+    $http.post('http://127.0.0.1\:4567/api/v1/comments', $scope.comment)
+      .success(function (data) {
+        $scope.$apply();
+    }).error(function (data, status) {
+        console.log('Error ' + data)
+    })
+  }
 
   $scope.go = function ( path ) {
     $location.path( path + $routeParams.id );

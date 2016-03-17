@@ -34,9 +34,16 @@
             <div class="well">
                 <h4>Leave a Comment:</h4>
 
-                <form role="form">
+                <form role="form" ng-submit="addComment()">
                     <div class="form-group">
-                        <textarea class="form-control" rows="3"></textarea>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-1">Name:</label>
+                            <div class="col-sm-6">
+                                <input id="name" ng-model="comment.name" type="text" required/>
+                            </div>
+                        </div>
+                        <br/><br/>
+                        <textarea id="body" ng-model="comment.body" ng-trim="false" class="form-control" rows="3" required />
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
@@ -44,35 +51,14 @@
 
             <hr>
 
-            <!-- the comments -->
-            <h3>Start Bootstrap
-                <small>9:41 PM on August 24, 2013</small>
-            </h3>
-            <p>This has to be the worst blog post I have ever read. It simply makes no sense. You start off by talking
-                about space or something, then you randomly start babbling about cupcakes, and you end off with random
-                fish names.</p>
-
-            <h3>Start Bootstrap
-                <small>9:47 PM on August 24, 2013</small>
-            </h3>
-            <p>Don't listen to this guy, any blog with the categories 'dinosaurs, spaceships, fried foods, wild animals,
-                alien abductions, business casual, robots, and fireworks' has true potential.</p>
-
+        <div ng-repeat="comments in comment">
+            <div class ="col-md-6">
+                <h3><label>{{comment.name}}</label></h3>
+                <label>Created-date: </label><p>{{comment.createdDate}}</p> 
+                <p>{{comment.body}}</p>
+            </div>
         </div>
 
-        <div class="col-lg-4">
-            <div class="well">
-                <h4>Blog Search</h4>
-
-                <div class="input-group">
-                    <input type="text" class="form-control">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="button"><i class="fa fa-search"></i>
-                            </button>
-                        </span>
-                </div>
-                <!-- /input-group -->
-            </div>
         </div>
     </div>
 
