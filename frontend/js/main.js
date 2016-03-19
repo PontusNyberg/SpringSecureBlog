@@ -70,12 +70,12 @@ app.controller('BlogViewCtrl', function ($scope, $routeParams, $location, $http)
         console.log('Error' + data + ' status: ' + status)
       })
 
-    $http.get('http://127.0.0.1\:4567/api/v1/comments/' + $routeParams.id)
-      .success(function(data) {
-        $scope.comments = data;
-      }).error(function(data, status) {
-        console.log('Error' + data + ' status: ' + status)
-      })
+  $http.get('http://127.0.0.1\:4567/api/v1/comments/' + $routeParams.id)
+    .success(function(data) {
+      $scope.comments = data;
+    }).error(function(data, status) {
+      console.log('Error' + data + ' status: ' + status)
+    })
 
   $scope.addComment = function() {
     $http.defaults.headers.post = {};
