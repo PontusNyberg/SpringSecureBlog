@@ -1,9 +1,4 @@
 /**
- * AngularJS Tutorial 1
- * @author Nick Kaye <nick.c.kaye@gmail.com>
- */
-
-/**
  * Main AngularJS Web Application
  */
 var app = angular.module('tutorialWebApp', [
@@ -32,10 +27,11 @@ app.config(['$routeProvider', function ($routeProvider) {
     .otherwise("/404", {templateUrl: "partials/404.html", controller: "PageCtrl"});
 }]);
 
+
 /**
- * Controls the Blog
+ * Handling the front page and getting title and date 
  */
-app.controller('BlogCtrl', function ($scope, $location, $http, $filter) {
+app.controller('BlogCtrl', function ($scope, $location, $http) {
   console.log("Accessing "); console.log(location.hash);
   $http.defaults.useXDomain = true;
 
@@ -47,6 +43,10 @@ app.controller('BlogCtrl', function ($scope, $location, $http, $filter) {
     })
 });
 
+
+/**
+ * Handles when a post is being added
+ */
 app.controller('BlogPostAddCtrl', function ($scope, $location, $http) {
   console.log("Accessing "); console.log(location.hash);
   $http.defaults.useXDomain = true;
@@ -62,40 +62,74 @@ app.controller('BlogPostAddCtrl', function ($scope, $location, $http) {
   }
 });
 
+
+/**
+ * Handling the view of specific posts
+ */
 app.controller('BlogViewCtrl', function ($scope, $routeParams, $location, $http) {
+  $http.defaults.headers.post = {};
+  $http.defaults.headers.delete = {};
+
+  // Get given post-data and comments.
   $http.get('http://127.0.0.1\:4567/api/v1/posts/' + $routeParams.id)
       .success(function(data) {
         $scope.post = data;
+        $scope.getAllComments();
       }).error(function(data, status) {
         console.log('Error' + data + ' status: ' + status)
       })
 
-  $http.get('http://127.0.0.1\:4567/api/v1/comments/' + $routeParams.id)
-    .success(function(data) {
-      $scope.comments = data;
-    }).error(function(data, status) {
-      console.log('Error' + data + ' status: ' + status)
-    })
+  // Get all the comments for this specific post.
+  $scope.getAllComments = function() {
+    $http.get('http://127.0.0.1\:4567/api/v1/comments/' + $routeParams.id)
+      .success(function(data) {
+        $scope.comments = data;
+      }).error(function(data, status) {
+        console.log('Error' + data + ' status: ' + status)
+      })
+  }
 
   $scope.addComment = function() {
-    $http.defaults.headers.post = {};
     $scope.comment.postId = $routeParams.id;
+
+    // Send the comment and clean the form.
     $http.post('http://127.0.0.1\:4567/api/v1/comments', $scope.comment)
       .success(function (data) {
-        $scope.$apply();
+        $scope.commentForm.$setPristine();
+        $scope.comment = null;
+
+        // Reload comments.
+        $scope.getAllComments();
     }).error(function (data, status) {
         console.log('Error ' + data)
     })
   }
 
+  $scope.deleteComment = function() {
+    // send deletion of comment.
+    $http.delete('http://127.0.0.1\:4567/api/v1/comments/' + $routeParams.id, null)
+      .success(function (data) {
+        // Reload comments.
+        $scope.getAllComments();
+    }).error(function (data, status) {
+        console.log('Error ' + data)
+    })
+  }
+
+  // Go to the gived post.
   $scope.go = function ( path ) {
     $location.path( path + $routeParams.id );
   }
 });
 
+
+/*
+* Handling edit post
+*/
 app.controller('BlogEditCtrl', function ($scope, $routeParams, $http, $location) {
   $http.defaults.useXDomain = true;
 
+  // Get the specific post-data so we can add it to the input-fields.
   $http.get('http://127.0.0.1\:4567/api/v1/posts/' + $routeParams.id)
     .success(function(data) {
       $scope.post = data;
@@ -103,8 +137,10 @@ app.controller('BlogEditCtrl', function ($scope, $routeParams, $http, $location)
       console.log('Error' + data + ' status: ' + status)
     })
 
+  // Send back the changed post.
   $scope.editPost = function () {
     $http.defaults.headers.post = {};
+
     $http.post('http://127.0.0.1\:4567/api/v1/posts/' + $routeParams.id, $scope.post)
       .success(function (data) {
         $location.path('/blog/post/' + $routeParams.id );
@@ -113,6 +149,7 @@ app.controller('BlogEditCtrl', function ($scope, $routeParams, $http, $location)
     })
   }
 });
+
 
 /**
  * Controls all other Pages

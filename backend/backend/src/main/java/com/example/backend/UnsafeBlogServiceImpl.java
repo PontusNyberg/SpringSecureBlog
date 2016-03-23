@@ -130,6 +130,7 @@ public class UnsafeBlogServiceImpl implements BlogService{
     
     public List<Comment> findAllComments(int postId) {
 	List<Comment> comments = new ArrayList<Comment>();
+	// TODO Change Dateformat on the comments
 	try {
 	    statement = connection.createStatement();
 	    resultSet = statement.executeQuery("SELECT * FROM comments where post_id=" + postId);
@@ -223,5 +224,16 @@ public class UnsafeBlogServiceImpl implements BlogService{
 	}
 	
 	return comment;
+    }
+    
+    public void deleteComment(int id) {
+	try{
+	    statement = connection.createStatement();
+	    statement.executeUpdate("DELETE FROM comments " 
+		    + "WHERE id =" + id + ";");
+	    statement.close();
+	} catch (SQLException e){
+	    e.printStackTrace();
+	}
     }
 }

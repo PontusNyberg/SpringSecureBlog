@@ -11,4 +11,5 @@ public interface BlogService {
     public Comment getComment(int id);
     public void createNewComment(String body);
     public Comment updateComment(String id, String body);
+    public void deleteComment(int id);
 }
