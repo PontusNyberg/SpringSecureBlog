@@ -68,7 +68,6 @@ app.controller('BlogPostAddCtrl', function ($scope, $location, $http) {
  */
 app.controller('BlogViewCtrl', function ($scope, $routeParams, $location, $http) {
   $http.defaults.headers.post = {};
-  $http.defaults.headers.delete = {};
 
   // Get given post-data and comments.
   $http.get('http://127.0.0.1\:4567/api/v1/posts/' + $routeParams.id)
@@ -98,17 +97,6 @@ app.controller('BlogViewCtrl', function ($scope, $routeParams, $location, $http)
         $scope.commentForm.$setPristine();
         $scope.comment = null;
 
-        // Reload comments.
-        $scope.getAllComments();
-    }).error(function (data, status) {
-        console.log('Error ' + data)
-    })
-  }
-
-  $scope.deleteComment = function() {
-    // send deletion of comment.
-    $http.delete('http://127.0.0.1\:4567/api/v1/comments/' + $routeParams.id, null)
-      .success(function (data) {
         // Reload comments.
         $scope.getAllComments();
     }).error(function (data, status) {

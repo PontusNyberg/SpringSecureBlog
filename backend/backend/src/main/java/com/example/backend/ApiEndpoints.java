@@ -1,5 +1,6 @@
 package com.example.backend;
 
+import static spark.Spark.after;
 import static spark.Spark.before;
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -55,12 +56,6 @@ public class ApiEndpoints
 	    return response;
 	}, new JsonTransformer());
 	
-	delete(API_CONTEXT + "/comments/:id", "application/json", (request, response) -> {
-	    blogService.deleteComment(Integer.parseInt(request.params(":id")));
-	    response.status(201);
-	    return response;
-	}, new JsonTransformer());
-	
 	get(API_CONTEXT + "/comments/:id", "application/json", (request, response)
 		-> blogService.getComment(Integer.parseInt(request.params(":id"))), new JsonTransformer());
     }
@@ -71,7 +66,7 @@ public class ApiEndpoints
 	    public void handle(Request request, Response response)
 		    throws Exception {
 		response.header("Access-Control-Allow-Origin", origin);
-		response.header("Access-Control-Request-Method", methods);
+		response.header("Access-Control-Request-Methods", methods);
 		response.header("Access-Control-Allow-Headers", headers);
 	    }
 	});

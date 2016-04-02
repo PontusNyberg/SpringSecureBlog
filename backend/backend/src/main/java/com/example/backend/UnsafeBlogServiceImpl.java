@@ -225,15 +225,4 @@ public class UnsafeBlogServiceImpl implements BlogService{
 	
 	return comment;
     }
-    
-    public void deleteComment(int id) {
-	try{
-	    statement = connection.createStatement();
-	    statement.executeUpdate("DELETE FROM comments " 
-		    + "WHERE id =" + id + ";");
-	    statement.close();
-	} catch (SQLException e){
-	    e.printStackTrace();
-	}
-    }
 }
