@@ -1,14 +1,25 @@
 package com.example.backend;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table( name = "posts" )
 public class BlogPost {
-    
     private int id;
     private String title;
     private String body;
     private Date createdDate;
     private Date updateDate;
+    
+    public BlogPost(){}
     
     public BlogPost (int id, String title, String body, Date createdDate, Date updateDate){
 	this.id = id;
@@ -18,6 +29,10 @@ public class BlogPost {
 	this.updateDate = updateDate;
     }
 
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    
+    @Column(name = "id")
     public int getId() {
         return id;
     }
@@ -26,6 +41,7 @@ public class BlogPost {
         this.id = id;
     }
 
+    @Column(name = "title")
     public String getTitle() {
         return title;
     }
@@ -34,6 +50,7 @@ public class BlogPost {
         this.title = title;
     }
 
+    @Column(name = "body")
     public String getBody() {
         return body;
     }
@@ -42,6 +59,7 @@ public class BlogPost {
         this.body = body;
     }
     
+    @Column(name = "created")
     public Date getCreatedDate(){
 	return this.createdDate;
     }
@@ -50,6 +68,7 @@ public class BlogPost {
 	this.createdDate = createDate;
     }
 
+    @Column(name = "updated")
     public Date getUpdateDate() {
         return updateDate;
     }

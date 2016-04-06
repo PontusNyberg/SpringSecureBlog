@@ -1,10 +1,8 @@
 package com.example.backend;
 
-import static spark.Spark.after;
 import static spark.Spark.before;
 import static spark.Spark.get;
 import static spark.Spark.post;
-import static spark.Spark.delete;
 import spark.Filter;
 import spark.Request;
 import spark.Response;
@@ -15,7 +13,7 @@ public class ApiEndpoints
     private BlogService blogService = null;
     
     public ApiEndpoints(){
-	this.blogService = new UnsafeBlogServiceImpl();
+	this.blogService = new SafeBlogServiceImpl();
 	enableCORS("*", "*", "*");
 	setupEndpoints();
     }
