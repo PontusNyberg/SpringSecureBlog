@@ -9,5 +9,6 @@
     <property name="hibernate.connection.password">blog</property>
     <!--Here we are mapping Pojo class not hbm-->
      <mapping class="com.example.backend.BlogPost" />
+     <mapping class="com.example.backend.Comment" />
   </session-factory>
 </hibernate-configuration>

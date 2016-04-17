@@ -1,9 +1,14 @@
 package com.example.backend;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+import com.google.gson.Gson;
 
 public class SafeBlogServiceImpl implements BlogService {
     private Session session = null;
@@ -13,7 +18,7 @@ public class SafeBlogServiceImpl implements BlogService {
     public List<BlogPost> findAll() {
  	List<BlogPost> queryList = (List<BlogPost>) getQueryList("from BlogPost s", null, -1);
 	if(queryList != null && queryList.isEmpty()){
-	    return null;
+	    return new ArrayList<BlogPost>();
 	} else {
 	    return queryList;  
 	}
@@ -24,7 +29,7 @@ public class SafeBlogServiceImpl implements BlogService {
     public BlogPost getPost(int id) {
 	List<BlogPost> queryList = (List<BlogPost>) getQueryList("from BlogPost s where s.id = :id", "id", id);
 	if(queryList != null && queryList.isEmpty()){
-	    return null;
+	    return new BlogPost();
 	} else {
 	    return queryList.get(0);
 	}
@@ -32,37 +37,67 @@ public class SafeBlogServiceImpl implements BlogService {
 
     @Override
     public void createNewPost(String body) {
+	BlogPost post = new Gson().fromJson(body, BlogPost.class);
+	post.setCreatedDate(new Date());
 	
+	session = HibernateConnector.getInstance().getSession();
+	Transaction transaction = session.beginTransaction();
+	
+	session.save(post);
+	transaction.commit();
+	session.close();
     }
 
     @Override
     public BlogPost updatePost(String id, String body) {
-	// TODO Auto-generated method stub
-	return null;
+	BlogPost post = new Gson().fromJson(body, BlogPost.class);
+	
+	session = HibernateConnector.getInstance().getSession();
+	session.saveOrUpdate(post);
+	session.flush();
+	
+	return post;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<Comment> findAllComments(int postId) {
-	// TODO Auto-generated method stub
-	return null;
+ 	List<Comment> queryList = (List<Comment>) getQueryList("from Comment c where c.postId = :postId", "postId", postId);
+	    return queryList;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Comment getComment(int id) {
-	// TODO Auto-generated method stub
-	return null;
+	List<Comment> queryList = (List<Comment>) getQueryList("from Comment c where c.id = :id", "id", id);
+	if(queryList != null && queryList.isEmpty()){
+	    return new Comment();
+	} else {
+	    return queryList.get(0);
+	}
     }
 
     @Override
     public void createNewComment(String body) {
-	// TODO Auto-generated method stub
+	Comment comment = new Gson().fromJson(body, Comment.class);
 	
+	session = HibernateConnector.getInstance().getSession();
+	Transaction transaction = session.beginTransaction();
+	
+	session.save(comment);
+	transaction.commit();
+	session.close();
     }
 
     @Override
     public Comment updateComment(String id, String body) {
-	// TODO Auto-generated method stub
-	return null;
+	Comment comment = new Gson().fromJson(body, Comment.class);
+	
+	session = HibernateConnector.getInstance().getSession();
+	session.saveOrUpdate(comment);
+	session.flush();
+	
+	return comment;
     }
     
     private List<?> getQueryList(String queryStr, String paramName, int param){

@@ -2,14 +2,25 @@ package com.example.backend;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import static javax.persistence.GenerationType.IDENTITY;
+
+@Entity
+@Table( name = "comments" )
 public class Comment {
-    
     private int id;
     private String name;
     private String body;
     private Date createdDate;
     private Date updateDate;
     private int postId;
+    
+    public Comment(){}
     
     public Comment (int id, String name, String body, Date createdDate, Date updateDate, int postId){
 	this.id = id;
@@ -20,6 +31,10 @@ public class Comment {
 	this.postId = postId;
     }
 
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    
+    @Column(name = "id")
     public int getId() {
         return id;
     }
@@ -28,6 +43,7 @@ public class Comment {
         this.id = id;
     }
 
+    @Column(name = "name")
     public String getName() {
         return name;
     }
@@ -36,6 +52,7 @@ public class Comment {
         this.name = name;
     }
 
+    @Column(name = "body")
     public String getBody() {
         return body;
     }
@@ -44,6 +61,7 @@ public class Comment {
         this.body = body;
     }
     
+    @Column(name = "created")
     public Date getCreatedDate(){
 	return this.createdDate;
     }
@@ -52,6 +70,7 @@ public class Comment {
 	this.createdDate = createDate;
     }
 
+    @Column(name = "updated")
     public Date getUpdateDate() {
         return updateDate;
     }
@@ -60,6 +79,7 @@ public class Comment {
         this.updateDate = updateDate;
     }
     
+    @Column(name = "post_id")
     public int getPostId() {
         return postId;
     }
